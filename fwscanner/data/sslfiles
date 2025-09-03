@@ -1,0 +1,11 @@
+*.crt
+*.pem
+*.cer
+*.p7b
+*.p12
+*.key
+*.der
+*.pfx
+*.jks
+*.keystore
+*.bks

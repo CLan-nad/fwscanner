@@ -1,0 +1,14 @@
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.mdb
+*.accdb
+*.ndb
+*.frm
+*.ibd
+*.myd
+*.myi
+*.parquet
+*.orc

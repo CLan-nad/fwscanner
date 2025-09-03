@@ -1,0 +1,17 @@
+authorized_keys
+*authorized_keys*
+host_key
+*host_key*
+id_rsa
+*id_rsa*
+id_dsa
+*id_dsa*
+*.pub
+id_ecdsa
+*id_ecdsa*
+id_ed25519
+*id_ed25519*
+ssh_config
+sshd_config
+known_hosts
+ssh_known_hosts

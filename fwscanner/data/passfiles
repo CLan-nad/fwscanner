@@ -1,0 +1,12 @@
+passwd
+shadow
+*.psk
+group
+gshadow
+login.defs
+*.htpasswd
+*.htdigest
+netrc
+.netrc
+passwd-* 
+shadow-*
