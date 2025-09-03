@@ -1,2 +1,68 @@
-# fwscanner
-固件扫描工具
+# 固件扫描器
+
+一个面向解包固件文件系统的静态扫描工具。读取 `data/` 规则，识别敏感文件、密钥与可疑迹象，并自动生成美观的 HTML 报告，帮助你快速聚焦高风险位置。
+
+## 特性
+参考了firmwalker项目，核心是通过模式匹配收集各类信息。本项目针对firmwalker的缺陷进行了改进，如：
+生成html报告美化输出
+扩展模式串提取更关键信息
+大量去噪
+
+## 使用方法
+
+python3 main.py <固件文件系统目录>
+
+运行后会在当前目录生成 `fwscanner_report.html`，用浏览器打开即可查看。
+
+说明：脚本默认排除部分噪声目录（`dev`, `proc`, `sys`, `tmp`）。
+
+## 报告包含的主要版块
+- 密码文件（按规则文件名匹配）
+- Unix MD5 哈希（如 `$1$...` 口令哈希）
+- SSL 文件
+- SSH 文件、常见配置文件、数据库文件
+- 启动相关 Shell 脚本、`.bin` 文件
+- 关键模式（规则中的关键字：命中文件数量统计）
+- Web 服务器、重要二进制
+- 高命中 IP 的文件（仅统计公网 IPv4 命中量）
+- 高命中 URL 的文件
+- 高命中邮箱的文件
+- 包含私钥的文件
+- 疑似含有密钥/令牌的文件
+- 疑似包含大量电话号码的文件
+- 加解密/签名相关高命中文件
+
+## 规则目录说明（可按需扩展）
+规则文件位置：`data/`
+- `passfiles`：与认证相关的文件名规则（如 `passwd`、`shadow`、`.htpasswd` 等）
+- `sslfiles`：证书与密钥容器（如 `*.pem`、`*.crt`、`*.p12`、`*.jks` 等）
+- `sshfiles`：各类 SSH 密钥/配置（如 `id_rsa`、`id_ed25519`、`sshd_config` 等）
+- `files`：通用配置和可能含敏感信息的文件（含 `.env`、`*.yaml`、网络与服务配置等）
+- `dbfiles`：数据库及其 WAL/SHM/索引等（如 `*.sqlite*`、`*.db-wal`、`*.frm` 等）
+- `patterns`：敏感关键字（密钥/无线/协议/品牌/调试痕迹等）
+- `webservers`：固件中常见的 Web 服务实现名（`nginx`、`uhttpd`、`goahead` 等）
+- `binaries`：可能重要或敏感的二进制（网络、加密、服务组件等）
+
+每个规则文件每行一条，支持通配符（如 `*.conf`）。你可以根据设备类型继续扩展（路由器/摄像头/工控）。
+
+## 自定义与阈值
+- “高命中文件”默认阈值为 50（在 `main.py` 顶部 `HEAVY_THRESHOLD`），可按需调整。
+- 需要更聚焦的启动脚本或目录范围，可在 `scan_shell_scripts` 或 `_iter_text_files` 中微调。
+- 想要添加特定品牌/型号的关键字或路径，把条目加到 `data/patterns` 或 `data/files` 即可。
+
+
+## 目录结构
+```
+fwscanner/
+├─ main.py
+├─ data/
+│  ├─ passfiles     # 认证相关文件名规则
+│  ├─ sslfiles      # 证书/密钥容器
+│  ├─ sshfiles      # SSH 密钥/配置
+│  ├─ files         # 通用与网络/服务配置
+│  ├─ dbfiles       # 数据库与相关文件
+│  ├─ patterns      # 敏感关键字
+│  ├─ webservers    # Web 服务实现名
+│  └─ binaries      # 关键二进制
+```
+
